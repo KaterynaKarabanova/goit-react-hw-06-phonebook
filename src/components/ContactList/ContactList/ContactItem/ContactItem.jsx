@@ -1,10 +1,16 @@
 import PropTypes from 'prop-types';
 import { StyledContactItem, StyledContactButton } from './ContactItem.styled';
+import { useDispatch } from 'react-redux';
+import { deleteContact } from 'redux/contactsSlice';
 export const ContactItem = ({ id, name, number, onDelete }) => {
+  const dispatch = useDispatch();
   return (
     <StyledContactItem>
       {name}:{` ` + number}
-      <StyledContactButton type="button" onClick={() => onDelete(id)}>
+      <StyledContactButton
+        type="button"
+        onClick={() => dispatch(deleteContact({ id }))}
+      >
         Delete
       </StyledContactButton>
     </StyledContactItem>
