@@ -1,21 +1,25 @@
 import { ContactForm } from './ContactsForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList/ContactList';
-
-import React, { useState, useEffect } from 'react';
-
+import { useSelector } from 'react-redux/es/hooks/useSelector';
+import { getContacts, getFilter } from 'redux/selectors';
+import { useDispatch } from 'react-redux';
+import { addContact, deleteContact, setFilter } from 'redux/actions';
+// import { useEffect } from 'react';
 export const App = () => {
-  const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
-  useEffect(() => {
-    if (JSON.parse(window.localStorage.getItem('Contacts'))?.length) {
-      setContacts(JSON.parse(window.localStorage.getItem('Contacts')));
-    }
-  }, []);
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
+  // useEffect(() => {
+  //   if (JSON.parse(window.localStorage.getItem('Contacts'))?.length) {
+  //     const contactsLS = JSON.parse(window.localStorage.getItem('Contacts'));
+  //     dispatch(setfromLS(contactsLS));
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    window.localStorage.setItem('Contacts', JSON.stringify(contacts));
-  }, [contacts]);
+  // useEffect(() => {
+  //   window.localStorage.setItem('Contacts', JSON.stringify(contacts));
+  // }, [contacts]);
 
   const onFormSubmit = e => {
     e.preventDefault();
@@ -25,19 +29,18 @@ export const App = () => {
       alert(`${name} is already in contacts`);
       return;
     }
-    setContacts(prevContacts => [
-      ...prevContacts,
-      { name: name, number: number, id: `${Date.now()}` },
-    ]);
+    dispatch(addContact(name, number));
   };
-
+  const onChange = value => {
+    dispatch(setFilter(value));
+  };
   const onSearch = () => {
     return contacts.filter(el =>
       el.name.toLowerCase().includes(filter.toLowerCase())
     );
   };
   const onDelete = id => {
-    setContacts(prev => prev.filter(el => el.id !== id));
+    dispatch(deleteContact(id));
   };
 
   return (
@@ -51,7 +54,7 @@ export const App = () => {
       <h1>Phonebook</h1>
       <ContactForm onFormSubmit={onFormSubmit} />
       <h2>Contacts</h2>
-      <Filter onChange={setFilter} />
+      <Filter onChange={onChange} />
       <ContactList contacts={onSearch()} onDelete={onDelete} />
     </div>
   );
