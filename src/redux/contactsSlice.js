@@ -1,4 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
 const initialState = {
   items: [],
@@ -21,19 +23,19 @@ const contactsSlice = createSlice({
         localStorage.setItem('Contacts', JSON.stringify(state.items));
       },
     },
-    loadContactsFromLocalStorage: {
-      reducer(state, action) {
-        const storedContacts = JSON.parse(localStorage.getItem('Contacts'));
-        if (storedContacts) {
-          state.items = storedContacts; // Update the state with the loaded contacts
-        }
-      },
-    },
   },
 });
 
 // Експортуємо генератори екшенів та редюсер
-export const { addContact, deleteContact, loadContactsFromLocalStorage } =
-  contactsSlice.actions;
+export const { addContact, deleteContact } = contactsSlice.actions;
+const persistConfig = {
+  key: 'contacts',
+  storage,
+};
+export const persistedReducer = persistReducer(
+  persistConfig,
+  contactsSlice.reducer
+);
+
 export const contactsReducer = contactsSlice.reducer;
 export const getContactsItems = state => state.contacts.items;

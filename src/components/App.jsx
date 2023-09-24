@@ -3,22 +3,13 @@ import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList/ContactList';
 import { useSelector } from 'react-redux/es/hooks/useSelector';
 import { getFilterValue } from '../redux/filterSlice';
-import {
-  addContact,
-  getContactsItems,
-  loadContactsFromLocalStorage,
-} from '../redux/contactsSlice';
+import { addContact, getContactsItems } from '../redux/contactsSlice';
 import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
 
 export const App = () => {
   const contacts = useSelector(getContactsItems);
   const filter = useSelector(getFilterValue);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(loadContactsFromLocalStorage());
-  }, [dispatch]);
 
   const onFormSubmit = e => {
     e.preventDefault();
@@ -35,7 +26,7 @@ export const App = () => {
     console.log(filter);
     if (filter) {
       return contacts.filter(el =>
-        el.name.toLowerCase().includes(filter.toLowerCase())
+        el.name.toLowerCase().includes(filter.value.toLowerCase())
       );
     }
     return contacts;
