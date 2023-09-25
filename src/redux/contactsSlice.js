@@ -13,14 +13,12 @@ const contactsSlice = createSlice({
     addContact: {
       reducer(state, action) {
         state.items.push(action.payload);
-        localStorage.setItem('Contacts', JSON.stringify(state.items));
       },
     },
     deleteContact: {
       reducer(state, action) {
         const index = state.items.findIndex(task => task.id === action.payload);
         state.items.splice(index, 1);
-        localStorage.setItem('Contacts', JSON.stringify(state.items));
       },
     },
   },
